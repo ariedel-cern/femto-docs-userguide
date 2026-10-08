@@ -1,0 +1,21 @@
+name: Sync gist
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - userguide.md
+
+jobs:
+  sync-gist:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Push userguide.md content to gist
+        env:
+          GH_TOKEN: ${{ secrets.GIST_TOKEN }}
+          GIST_ID: 26cad497b32c11a95c20befc139051fc
+        run: |
+          gh api -X PATCH "gists/${GIST_ID}" \
+            -f "files[userguide.md][content]=$(cat userguide.md)"
